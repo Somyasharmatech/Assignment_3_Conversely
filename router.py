@@ -36,7 +36,7 @@ Return your output strictly as a valid JSON object with no other text, fenced ma
             
         client = Groq(api_key=api_key)
         response = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
             response_format={"type": "json_object"}

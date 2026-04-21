@@ -6,6 +6,7 @@ pypdf==5.1.0
 
 # API and ML Utils
 python-dotenv==1.0.1
+langchain-text-splitters==0.3.5
 groq==0.13.1
 scikit-learn==1.5.2
 pandas==2.2.3

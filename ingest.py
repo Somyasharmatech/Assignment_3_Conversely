@@ -1,7 +1,7 @@
 import os
 import glob
 from pypdf import PdfReader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 # The requirements stated: No Langchain Agents. 
 # We are only using langchain for the text splitter (chunking), not agents.
 # We will use sentence_transformers manually to compute embeddings to be safe, 
