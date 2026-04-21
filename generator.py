@@ -1,5 +1,8 @@
 import os
 import chromadb
+from dotenv import load_dotenv
+
+load_dotenv()
 from chromadb.utils import embedding_functions
 from groq import Groq
 from router import classify_query
