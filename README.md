@@ -39,7 +39,7 @@ The script runs 15 diverse queries through the pipeline and gathers automated me
    - Put your 4 AI Regulation `.pdf` files into the `data/` folder.
 3. **Set API Keys:**
    ```bash
-   export GEMINI_API_KEY="your_api_key_here"
+   export GROQ_API_KEY="your_api_key_here"
    ```
 4. **Run the CLI:**
    - Step 1: Ingest Documents into DB

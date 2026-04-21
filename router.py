@@ -1,16 +1,12 @@
 import os
 import json
-import google.generativeai as genai
+from groq import Groq
 
 def classify_query(query: str):
     """
     Classifies a user query into one of three categories: Factual, Synthesis, or Out of scope.
     This explicit classification routing happens BEFORE retrieval.
     """
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if api_key:
-        genai.configure(api_key=api_key)
-        
     prompt = f"""You are a query classification router for an AI Regulation Knowledge Base.
 Your task is to analyze the user's query and classify it into exactly ONE of the following three categories.
 
@@ -30,12 +26,18 @@ Return your output strictly as a valid JSON object with no other text, fenced ma
 """
 
     try:
-        if not os.environ.get("GEMINI_API_KEY"):
-            raise ValueError("GEMINI_API_KEY is not set.")
+        api_key = os.environ.get("GROQ_API_KEY")
+        if not api_key:
+            raise ValueError("GROQ_API_KEY is not set.")
             
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
-        text = response.text.replace("```json", "").replace("```", "").strip()
+        client = Groq(api_key=api_key)
+        response = client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            response_format={"type": "json_object"}
+        )
+        text = response.choices[0].message.content.strip()
         result = json.loads(text)
         
         category = result.get("category", "Out of scope")

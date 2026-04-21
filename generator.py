@@ -1,7 +1,7 @@
 import os
 import chromadb
 from chromadb.utils import embedding_functions
-import google.generativeai as genai
+from groq import Groq
 from router import classify_query
 
 def get_db_collection(db_path="chroma_db", collection_name="ai_regulation"):
@@ -86,12 +86,18 @@ Context:
 """
     
     try:
-        api_key = os.environ.get("GEMINI_API_KEY")
-        if api_key:
-             genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
-        answer = response.text.strip()
+        api_key = os.environ.get("GROQ_API_KEY")
+        if not api_key:
+             return {"answer": "Error: GROQ_API_KEY is not set.", "category": category, "chunks_used": chunks}
+             
+        client = Groq(api_key=api_key)
+        response = client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=1024
+        )
+        answer = response.choices[0].message.content.strip()
     except Exception as e:
         answer = f"Error generating text: {e}"
         
