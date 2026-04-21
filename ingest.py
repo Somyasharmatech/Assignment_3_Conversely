@@ -12,19 +12,31 @@ from chromadb.utils import embedding_functions
 def load_documents(directory="data"):
     print(f"Loading documents from {directory}...")
     documents = []
-    file_paths = glob.glob(os.path.join(directory, "*.pdf"))
+    
+    # Handle PDFs
+    pdf_files = glob.glob(os.path.join(directory, "*.pdf"))
+    # Handle TXTs
+    txt_files = glob.glob(os.path.join(directory, "*.txt"))
+    
+    file_paths = pdf_files + txt_files
+    
     if not file_paths:
-        print(f"WARNING: No PDF files found in '{directory}'. Please place the 4 AI regulation documents there.")
+        print(f"WARNING: No Document files found in '{directory}'. Please place the 4 AI regulation documents there.")
         return []
 
     for file_path in file_paths:
         try:
-            reader = PdfReader(file_path)
-            text = ""
-            for page in reader.pages:
-                extracted = page.extract_text()
-                if extracted:
-                    text += extracted + "\n"
+            if file_path.endswith('.pdf'):
+                reader = PdfReader(file_path)
+                text = ""
+                for page in reader.pages:
+                    extracted = page.extract_text()
+                    if extracted:
+                        text += extracted + "\n"
+            else:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    text = f.read()
+                    
             documents.append({"text": text, "source": os.path.basename(file_path)})
             print(f"Loaded: {os.path.basename(file_path)} ({len(text)} characters)")
         except Exception as e:
